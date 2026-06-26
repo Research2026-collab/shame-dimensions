@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shame as Resource – Conditions for Constructive Transformation</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink:        #1a1a1a;
+    --paper:      #f7f5f0;
+    --muted:      #6b6560;
+    --rule:       #d8d4cc;
+    --c1:         #2d5f4f;
+    --c1-light:   #e8f2ef;
+    --c2:         #7a3e1a;
+    --c2-light:   #f5ede6;
+    --c3:         #3b3472;
+    --c3-light:   #eceaf6;
+    --c4:         #4a5e1a;
+    --c4-light:   #eef2e6;
+    --c5:         #5a5a5a;
+    --c5-light:   #f0efed;
+    --c6:         #1e4a72;
+    --c6-light:   #e6eef5;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Avenir Next', 'Avenir', 'Century Gothic', Futura, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  header {
+    border-bottom: 1px solid var(--rule);
+    padding: 2.5rem 2rem 1.8rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: .6rem;
+  }
+
+  h1 {
+    font-size: clamp(1.5rem, 4vw, 2.1rem);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -.01em;
+    color: var(--ink);
+    margin-bottom: .9rem;
+  }
+
+  .subtitle {
+    font-size: 13.5px;
+    color: var(--muted);
+    max-width: 620px;
+    line-height: 1.65;
+  }
+
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 2rem 4rem;
+  }
+
+  .section-label {
+    font-size: 10.5px;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: .7rem;
+    margin-top: 2.2rem;
+  }
+
+  .vignette-wrap {
+    border: 1px solid var(--rule);
+    border-left: 4px solid #999;
+    background: #fff;
+    padding: 1.6rem 1.8rem;
+    margin-bottom: .5rem;
+    font-size: 14px;
+    line-height: 1.9;
+    color: #2c2c2c;
+    font-style: italic;
+  }
+
+  .vignette-wrap .vig-name {
+    font-style: normal;
+    font-weight: 700;
+    font-size: 11.5px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: .9rem;
+    display: block;
+  }
+
+  .vig-norm, .vig-prot, .vig-priv, .vig-scaf, .vig-str {
+    transition: background .25s;
+    padding: 0 2px;
+    border-radius: 1px;
+  }
+  body.tab-norm .vig-norm { background: var(--c1-light); }
+  body.tab-prot .vig-prot { background: var(--c2-light); }
+  body.tab-priv .vig-priv { background: var(--c3-light); }
+  body.tab-scaf .vig-scaf { background: var(--c4-light); }
+  body.tab-str  .vig-str  { background: var(--c6-light); }
+
+  .vignette-note {
+    font-size: 11.5px;
+    color: var(--muted);
+    margin-top: .5rem;
+    margin-bottom: 2rem;
+    line-height: 1.5;
+  }
+
+  .tabs {
+    display: flex;
+    border-bottom: 2px solid var(--rule);
+    overflow-x: auto;
+    gap: 0;
+    margin-top: .4rem;
+  }
+
+  .tab-btn {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    padding: .75rem 1.1rem;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color .18s, border-color .18s;
+    line-height: 1.3;
+  }
+  .tab-btn:hover { color: var(--ink); }
+
+  .tab-num {
+    display: block;
+    font-size: 9.5px;
+    font-weight: 400;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    opacity: .55;
+    margin-bottom: 1px;
+  }
+
+  .tab-btn.active-norm { color: var(--c1); border-bottom-color: var(--c1); }
+  .tab-btn.active-prot { color: var(--c2); border-bottom-color: var(--c2); }
+  .tab-btn.active-priv { color: var(--c3); border-bottom-color: var(--c3); }
+  .tab-btn.active-scaf { color: var(--c4); border-bottom-color: var(--c4); }
+  .tab-btn.active-open { color: var(--c5); border-bottom-color: var(--c5); }
+  .tab-btn.active-str  { color: var(--c6); border-bottom-color: var(--c6); }
+
+  .panel { display: none; padding-top: 1.8rem; }
+  .panel.visible { display: block; }
+
+  .panel-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.4rem;
+  }
+
+  .panel-accent {
+    width: 4px;
+    min-height: 52px;
+    flex-shrink: 0;
+    border-radius: 2px;
+    margin-top: 3px;
+  }
+  .accent-norm { background: var(--c1); }
+  .accent-prot { background: var(--c2); }
+  .accent-priv { background: var(--c3); }
+  .accent-scaf { background: var(--c4); }
+  .accent-open { background: var(--c5); }
+  .accent-str  { background: var(--c6); }
+
+  .panel-label {
+    font-size: 10.5px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: .25rem;
+  }
+  .label-norm { color: var(--c1); }
+  .label-prot { color: var(--c2); }
+  .label-priv { color: var(--c3); }
+  .label-scaf { color: var(--c4); }
+  .label-open { color: var(--c5); }
+  .label-str  { color: var(--c6); }
+
+  .panel-name {
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--ink);
+    margin-bottom: .2rem;
+  }
+
+  .panel-sub {
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+
+  .focus-line {
+    font-size: 14px;
+    font-style: italic;
+    color: #444;
+    border-left: 3px solid var(--rule);
+    padding-left: 1rem;
+    margin-bottom: 1.4rem;
+    line-height: 1.7;
+  }
+
+  .panel-body {
+    font-size: 14px;
+    line-height: 1.88;
+    color: #2a2a2a;
+    margin-bottom: 1.1rem;
+  }
+
+  .voice {
+    background: #fff;
+    border: 1px solid var(--rule);
+    padding: 1.2rem 1.4rem 1rem;
+    margin: 1.4rem 0;
+  }
+
+  .voice-label {
+    font-size: 10px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: .55rem;
+  }
+
+  .voice-text {
+    font-size: 13.5px;
+    line-height: 1.82;
+    color: #2c2c2c;
+    font-style: italic;
+  }
+
+  .voice-id {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: .5rem;
+    font-style: normal;
+  }
+
+  .shift-block {
+    background: #fff;
+    border: 1px solid var(--rule);
+    padding: 1.1rem 1.4rem;
+    margin-top: 1.4rem;
+  }
+
+  .shift-label {
+    font-size: 10px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: .6rem;
+  }
+
+  .shift-text {
+    font-size: 13.5px;
+    line-height: 1.78;
+    color: #2c2c2c;
+  }
+
+  .chapter-ref {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 1.6rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--rule);
+    line-height: 1.55;
+  }
+
+  .open-list {
+    list-style: none;
+    margin: 1.2rem 0;
+  }
+  .open-list li {
+    font-size: 14px;
+    line-height: 1.82;
+    color: #2a2a2a;
+    padding: .7rem 0;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    gap: .8rem;
+    align-items: flex-start;
+  }
+  .open-list li:last-child { border-bottom: none; }
+  .open-marker {
+    flex-shrink: 0;
+    width: 6px;
+    height: 6px;
+    background: var(--c5);
+    border-radius: 50%;
+    margin-top: .55rem;
+  }
+
+  footer {
+    border-top: 1px solid var(--rule);
+    padding: 1.4rem 2rem;
+    font-size: 11.5px;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 600px) {
+    header, main { padding-left: 1.2rem; padding-right: 1.2rem; }
+    .tab-btn { padding: .65rem .8rem; font-size: 12px; }
+  }
+</style>
+</head>
+<body class="tab-norm">
+
+<header>
+  <p class="eyebrow">Companion · Chapter 10 · TRACE Study</p>
+  <h1>When Does Shame Become a Resource?</h1>
+  <p class="subtitle">Five conditions that determine whether a shame experience remains inhibiting or becomes transformative. Each tab reads the same situation through a different lens.</p>
+</header>
+
+<main>
+
+  <p class="section-label">Vignette</p>
+
+  <div class="vignette-wrap">
+    <span class="vig-name">Saraswathi &nbsp;·&nbsp; Third Semester, Engineering &nbsp;·&nbsp; Professor Jain</span>
+
+    It is a lab afternoon. Students are working in groups of three on a circuit. <span class="vig-scaf">Professor Jain moves through the benches and stops at Saraswathi's group.</span> She asks why the measurement is not correct. <span class="vig-scaf">Saraswathi explains her approach.</span> Professor Jain shakes her head: the error is in the wiring, and Saraswathi should have seen it. <span class="vig-prot">Two groupmates exchange a glance.</span> <span class="vig-norm vig-scaf">Saraswathi begins to disconnect and re-route the cables. Her hands tremble slightly.</span> <span class="vig-priv">When she leaves the room, a classmate from another group asks casually how it went. Saraswathi says: fine.</span> <span class="vig-str">She does not mention that she found the wiring question in her notes from the previous session.</span>
+
+    At the next lab session, she calls in sick.
+  </div>
+
+  <p class="vignette-note">This vignette is an analytical composite drawn from participant accounts in the TRACE study (G1 responses). It does not represent a single individual.</p>
+
+  <p class="section-label">Five conditions for constructive transformation</p>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab-btn active-norm" role="tab" onclick="switchTab('norm',this)" aria-selected="true">
+      <span class="tab-num">Condition 1</span>
+      Public Normalisation
+    </button>
+    <button class="tab-btn" role="tab" onclick="switchTab('prot',this)" aria-selected="false">
+      <span class="tab-num">Condition 2</span>
+      Active Protection
+    </button>
+    <button class="tab-btn" role="tab" onclick="switchTab('priv',this)" aria-selected="false">
+      <span class="tab-num">Condition 3</span>
+      Private Space
+    </button>
+    <button class="tab-btn" role="tab" onclick="switchTab('scaf',this)" aria-selected="false">
+      <span class="tab-num">Condition 4</span>
+      Cognitive Scaffolding
+    </button>
+    <button class="tab-btn" role="tab" onclick="switchTab('str',this)" aria-selected="false">
+      <span class="tab-num">Condition 5</span>
+      Structural Recognition
+    </button>
+    <button class="tab-btn" role="tab" onclick="switchTab('open',this)" aria-selected="false">
+      <span class="tab-num">Reflection</span>
+      What Remains Open
+    </button>
+  </nav>
+
+  <!-- PANEL 1: NORMALISE -->
+  <div class="panel visible" id="panel-norm">
+    <div class="panel-head">
+      <div class="panel-accent accent-norm"></div>
+      <div>
+        <p class="panel-label label-norm">Condition 1</p>
+        <p class="panel-name">Public Normalisation of Error</p>
+        <p class="panel-sub">The teacher reframes the mistake in the space where it occurred.</p>
+      </div>
+    </div>
+
+    <p class="focus-line">The error is in the wiring, and Saraswathi should have seen it.</p>
+
+    <p class="panel-body">
+      The critical moment is not the mistake itself but how it is named. Professor Jain's correction is factually accurate, yet it frames the error as a failure of attention rather than a step in a diagnostic process. The phrase "should have seen it" assigns personal inadequacy to what is, in a lab context, a routine wiring problem. Because this happens in front of the group, the meaning is not only internal to Saraswathi. It becomes a public record.
+    </p>
+
+    <p class="panel-body">
+      The first condition would require a different move at exactly this point. A response such as "this is a common routing issue, let us work out why the measurement fails" shifts the error from a signal of personal inadequacy to an analytical problem the group can examine together. The shame is not negated; it is redirected towards an intellectually productive outcome.
+    </p>
+
+    <div class="voice">
+      <p class="voice-label">TRACE study, G3 response</p>
+      <p class="voice-text">"Instead of scolding me, my teacher smiled and said, it is okay, mistakes help us learn. She then explained the correct answer in a kind way and even praised me for trying. This made me feel supported and confident. It turned my shame into a positive learning moment."</p>
+      <p class="voice-id">P0083, Female, Engineering</p>
+    </div>
+
+    <div class="shift-block">
+      <p class="shift-label">What shifts</p>
+      <p class="shift-text">The evaluative meaning of the error changes. Saraswathi still made a wiring mistake. What changes is whether that mistake registers as evidence of personal inadequacy or as a moment in a shared learning process. This distinction determines what she does at the next lab session.</p>
+    </div>
+
+    <p class="chapter-ref">See Chapter 10.4 for the full analysis of this condition and the TRACE data on which it is based.</p>
+  </div>
+
+  <!-- PANEL 2: PROTECT -->
+  <div class="panel" id="panel-prot">
+    <div class="panel-head">
+      <div class="panel-accent accent-prot"></div>
+      <div>
+        <p class="panel-label label-prot">Condition 2</p>
+        <p class="panel-name">Active Protection in Peer Exposure</p>
+        <p class="panel-sub">The teacher intervenes when peers amplify the shame.</p>
+      </div>
+    </div>
+
+    <p class="focus-line">Two groupmates exchange a glance.</p>
+
+    <p class="panel-body">
+      The glance between the two groupmates is a brief social signal, the kind that passes between people who share an observation they do not name aloud. For Saraswathi, it is legible. She registers it as a collective witness to her failure, and it adds a relational dimension to what was already a difficult moment.
+    </p>
+
+    <p class="panel-body">
+      When peers respond to a student's error in ways that amplify the shame, through laughter, silence, or a shared glance, the teacher faces a choice that most pedagogical training does not prepare for: to act on behalf of the student within the social space of the group. This means addressing the relational dynamic, not only the technical content of the error. Redirecting the group's attention may be enough: "Let us all look at this routing question together, it comes up regularly."
+    </p>
+
+    <div class="voice">
+      <p class="voice-label">TRACE study, G3 response</p>
+      <p class="voice-text">"I gave the wrong answer in front of the whole class, and some students laughed at me. I felt very ashamed and wanted to sit down immediately. But my teacher stopped the class and said, making mistakes is a sign that you are trying, and that is the most important step in learning. He then explained the correct answer kindly and even appreciated my effort for speaking up. That moment really changed the way I looked at mistakes."</p>
+      <p class="voice-id">P0108, Male, Engineering</p>
+    </div>
+
+    <div class="shift-block">
+      <p class="shift-label">What shifts</p>
+      <p class="shift-text">Saraswathi's standing within the group is restored. The teacher's intervention signals to the group that the error is pedagogically ordinary. The relational dimension of Saraswathi's shame, which the glance had activated, is addressed at the level where it arose.</p>
+    </div>
+
+    <p class="chapter-ref">See Chapter 10.4 and Chapter 4.3 for the analysis of relational shame and peer dynamics in the TRACE data.</p>
+  </div>
+
+  <!-- PANEL 3: PRIVATE -->
+  <div class="panel" id="panel-priv">
+    <div class="panel-head">
+      <div class="panel-accent accent-priv"></div>
+      <div>
+        <p class="panel-label label-priv">Condition 3</p>
+        <p class="panel-name">Private Support Outside the Public Space</p>
+        <p class="panel-sub">The teacher creates a relational space away from the audience that constituted the shame.</p>
+      </div>
+    </div>
+
+    <p class="focus-line">When she leaves the room, a classmate asks casually how it went. Saraswathi says: fine.</p>
+
+    <p class="panel-body">
+      Saraswathi's answer to the classmate is not evasion for its own sake. It is the socially available response in a situation where the real answer cannot be given to someone she does not trust in a context that offers no protection. The public space of the lab, and the corridor beyond it, are not places where shame can be processed.
+    </p>
+
+    <p class="panel-body">
+      The third condition requires that a protected space be created, not as a formal institutional procedure, but as a simple relational act. If Professor Jain had approached Saraswathi briefly after the session and outside the group, the interaction would shift from evaluated performance to private conversation. What is communicated there need not differ from what was said in the lab. What changes is the register: Saraswathi is no longer a student being assessed, but a person being spoken to.
+    </p>
+
+    <div class="voice">
+      <p class="voice-label">TRACE study, G3 response</p>
+      <p class="voice-text">"She offered to help me go over the quiz questions and invited me to come in during lunch for extra help. Her calm and supportive attitude made me feel safe, and it helped take away the shame I was feeling. That experience really changed the way I viewed mistakes. I realized that asking for help is okay, and that teachers are there to support, not judge."</p>
+      <p class="voice-id">P0294, Male, Engineering</p>
+    </div>
+
+    <div class="shift-block">
+      <p class="shift-label">What shifts</p>
+      <p class="shift-text">Saraswathi does not need to answer "fine." She has a space in which another answer is possible. Whether she uses it depends on whether she experiences Professor Jain as someone who can receive it. The private approach communicates this before any words are exchanged.</p>
+    </div>
+
+    <p class="chapter-ref">See Chapter 10.4 for the full analysis of this condition and its relationship to emotional accessibility in teacher-student relations.</p>
+  </div>
+
+  <!-- PANEL 4: SCAFFOLD -->
+  <div class="panel" id="panel-scaf">
+    <div class="panel-head">
+      <div class="panel-accent accent-scaf"></div>
+      <div>
+        <p class="panel-label label-scaf">Condition 4</p>
+        <p class="panel-name">Cognitive Scaffolding in the Exposure Situation</p>
+        <p class="panel-sub">The teacher works alongside the student rather than observing from a distance.</p>
+      </div>
+    </div>
+
+    <p class="focus-line">Saraswathi begins to disconnect and re-route the cables. Her hands tremble slightly.</p>
+
+    <p class="panel-body">
+      Saraswathi is not passive. She identifies the problem and begins to correct it, working through the wiring alone while her hands tremble. The trembling indicates that the shame is not only cognitive but somatic: her body carries the exposure even as she tries to repair the error technically. She is performing competence under conditions that make competence harder.
+    </p>
+
+    <p class="panel-body">
+      The fourth condition would require Professor Jain to enter this moment rather than observe it. Working alongside Saraswathi, for instance by tracing the circuit from the source and asking where the signal first deviates, converts the solitary repair into a collaborative diagnostic process. It keeps Saraswathi's agency in the task while reducing the social exposure that constitutes the shame.
+    </p>
+
+    <div class="voice">
+      <p class="voice-label">TRACE study, G3 response</p>
+      <p class="voice-text">"Yes, when my professor asks the question and I answer but I hesitate between the answer, so my professor also gives some hints, words, or terms."</p>
+      <p class="voice-id">P0124, Female, Engineering</p>
+    </div>
+
+    <div class="voice">
+      <p class="voice-label">TRACE study, G3 response</p>
+      <p class="voice-text">"One day I feel shame to give answer in front of my class, so ma'am came to me and she was helping me to give answer and she stands with me."</p>
+      <p class="voice-id">P0127, Female, Engineering</p>
+    </div>
+
+    <div class="shift-block">
+      <p class="shift-label">What shifts</p>
+      <p class="shift-text">Saraswathi's hands may still tremble. The mistake remains visible. What changes is the relational structure of the moment: she is no longer alone in the error. The scaffold does not remove the difficulty; it makes the difficulty shared.</p>
+    </div>
+
+    <p class="chapter-ref">See Chapter 10.4 for the full analysis of this condition and its relationship to scaffolded instruction in shame-sensitive pedagogy.</p>
+  </div>
+
+  <!-- PANEL 5: STRUCTURAL -->
+  <div class="panel" id="panel-str">
+    <div class="panel-head">
+      <div class="panel-accent accent-str"></div>
+      <div>
+        <p class="panel-label label-str">Condition 5</p>
+        <p class="panel-name">Structural Recognition</p>
+        <p class="panel-sub">Shame can be a signal about one's social position, not only about one's performance.</p>
+      </div>
+    </div>
+
+    <p class="focus-line">She does not mention that she found the wiring question in her notes from the previous session.</p>
+
+    <p class="panel-body">
+      Saraswathi knew the answer. The notes were there. What stopped her from speaking up in the moment, and what makes the correction harder to carry, may have less to do with her knowledge of the circuit than with her position in the group. The two groupmates who exchanged a glance: did she expect that glance? Has she seen it before?
+    </p>
+
+    <p class="panel-body">
+      The four preceding conditions all concern what the teacher does. This one concerns what Saraswathi can see about her own situation. A student who understands that her shame arises partly from her position in a social hierarchy, whether related to gender, caste, regional background, or economic status, has a different basis for responding than one who reads the same experience as evidence of personal inadequacy. Structural recognition does not make the shame disappear. It changes what the shame is taken to mean.
+    </p>
+
+    <div class="voice">
+      <p class="voice-label">TRACE study, G5 response</p>
+      <p class="voice-text">"Some classmates assumed my abilities based on my caste background without even knowing me personally. At that moment, I felt a mix of discomfort and shame because I was being judged for something I had no control over."</p>
+      <p class="voice-id">P33, Female</p>
+    </div>
+
+    <p class="panel-body">
+      The phrase "something I had no control over" marks a reading of the experience that locates the source of the shame outside the self. This is not a denial of the wiring error. It is a recognition that the social meaning of the error is shaped by something beyond the error itself.
+    </p>
+
+    <p class="panel-body">
+      Structural recognition of this kind is not uniformly available. It depends on whether a student has interpretive frameworks that make the structural dimension visible, whether peers, family members, or the institution itself have named these dynamics, and whether the educational environment creates space for such recognition. Where those conditions are absent, shame is more likely to be read as personal, and the internalisation that follows is harder to undo.
+    </p>
+
+    <div class="shift-block">
+      <p class="shift-label">What shifts</p>
+      <p class="shift-text">Saraswathi may still feel ashamed. What changes is whether she attributes that shame to her own failure or to a situation she did not fully create. That distinction shapes whether she studies the wiring diagram again or asks a different question about why she is in this position at all.</p>
+    </div>
+
+    <p class="chapter-ref">See Chapter 10.5 for the full analysis of structural recognition as a condition of transformation, and Chapter 9.5 for the empirical findings on collective self-respect.</p>
+  </div>
+
+  <!-- PANEL 6: OPEN -->
+  <div class="panel" id="panel-open">
+    <div class="panel-head">
+      <div class="panel-accent accent-open"></div>
+      <div>
+        <p class="panel-label label-open">Reflection</p>
+        <p class="panel-name">What Remains Open</p>
+        <p class="panel-sub">None of the five conditions operates automatically. Each requires a decision or an opportunity.</p>
+      </div>
+    </div>
+
+    <p class="panel-body">
+      The vignette as written does not include any of the five conditions. Professor Jain corrects the error, names its cause, and moves on. This is not an unusual response. In most higher education contexts, it is the default. The correction is accurate, the expectations are reasonable, and the session continues. Nothing exceptional has happened, except that Saraswathi calls in sick the following week.
+    </p>
+
+    <p class="panel-body">
+      The TRACE data confirm that these conditions are not reliably present. Of the 535 students surveyed, 28 explicitly stated that they had never experienced positive support from a teacher in a moment of shame. Others described situations in which the shame remained unaddressed, absorbed in silence, or managed entirely alone. The five conditions are pedagogical choices and structural opportunities, made or not made, present or not present, in specific moments.
+    </p>
+
+    <ul class="open-list">
+      <li><span class="open-marker"></span>The conditions do not require exceptional teachers. They require specific, learnable responses to predictable classroom situations.</li>
+      <li><span class="open-marker"></span>No single condition is sufficient on its own. Normalisation without protection leaves the relational dimension unaddressed. Scaffolding without private space leaves no place for Saraswathi to process what happened.</li>
+      <li><span class="open-marker"></span>Whether any condition is activated depends not only on the teacher's intention but on Saraswathi's capacity to receive it, which is itself shaped by prior experiences of being seen, corrected, or dismissed.</li>
+      <li><span class="open-marker"></span>Structural recognition is not something a teacher can simply provide. It requires that the institution create the conditions under which social position can be named and examined without penalty.</li>
+      <li><span class="open-marker"></span>The difference between shame as burden and shame as resource may rest on decisions made in seconds, or on frameworks built over years. Both matter.</li>
+    </ul>
+
+    <p class="panel-body" style="margin-top:1.2rem;">
+      At the next lab session, Saraswathi calls in sick. The data cannot tell us what she would have done had any of the five conditions been present. What they do tell us is that the conditions were absent, and that their absence has consequences that extend beyond a single afternoon in the lab.
+    </p>
+
+    <p class="chapter-ref">See Chapter 10.4 and 10.5 for the empirical analysis, and Chapter 12 for pedagogical recommendations for teachers.</p>
+  </div>
+
+</main>
+
+<footer>
+  Yadav, H., Vanderheiden, E., &amp; Varshney, S. (2026). <em>Shame as Resource in Indian Education: A Handbook for Teachers, Researchers, and Policy-Makers.</em> &nbsp;&#183;&nbsp; Companion to Chapter 10 &nbsp;&#183;&nbsp; TRACE Study
+</footer>
+
+<script>
+  function switchTab(dim, btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => {
+      b.className = 'tab-btn';
+      b.setAttribute('aria-selected', 'false');
+    });
+    btn.classList.add('active-' + dim);
+    btn.setAttribute('aria-selected', 'true');
+
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('visible'));
+    document.getElementById('panel-' + dim).classList.add('visible');
+
+    document.body.className = 'tab-' + dim;
+  }
+</script>
+</body>
+</html>
