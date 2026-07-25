@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reflection Tool for Shame-Sensitive Educational Practice</title>
+<style>
+  :root{
+    --paper: #f7f5f0;
+    --paper-alt: #eeebe3;
+    --ink: #1a1a1a;
+    --ink-soft: #6b6560;
+    --moss: #2d5f4f;
+    --moss-deep: #234a3d;
+    --clay: #7a3e1a;
+    --rule: #d8d4cc;
+    --focus: #234a3d;
+    --serif-display: Georgia, "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
+    --serif-body: Charter, Georgia, "Sitka Text", serif;
+    --sans-util: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce){ html{ scroll-behavior: auto; } *{ transition: none !important; animation: none !important; } }
+
+  body{
+    margin:0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--serif-body);
+    line-height: 1.55;
+  }
+
+  a{ color: var(--moss-deep); }
+
+  /* ---------- Header ---------- */
+  .trace-nav{
+    max-width: 1080px; margin: 0 auto; padding: .9rem 20px 0;
+    display:flex; flex-wrap: wrap; align-items: center; gap: .4rem;
+  }
+  .trace-nav-label{
+    font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft);
+    font-weight: 700; margin-right: .5rem; flex-basis: 100%;
+  }
+  .trace-nav a, .trace-nav .trace-nav-current{
+    font-size: 11.5px; padding: .3rem .7rem; border: 1px solid var(--rule); color: var(--ink-soft);
+    text-decoration: none; background: #fff; font-family: var(--sans-util); white-space: nowrap;
+  }
+  .trace-nav a:hover{ color: var(--ink); border-color: #aaa; }
+  .trace-nav .trace-nav-current{ color: var(--ink); font-weight: 700; background: var(--paper); }
+  @media (max-width: 600px){ .trace-nav{ padding-left: 16px; padding-right: 16px; } }
+
+  header.top{
+    position: sticky; top:0; z-index: 30;
+    background: var(--paper);
+    border-bottom: 1px solid var(--rule);
+    padding: 14px 20px;
+  }
+  .top-inner{
+    max-width: 980px; margin: 0 auto;
+    display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: flex-end; justify-content: space-between;
+  }
+  .brand{ display:flex; flex-direction: column; gap: 2px; }
+  .brand .eyebrow{
+    font-family: var(--sans-util); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .brand h1{
+    font-family: var(--serif-display); font-size: 20px; margin:0; font-weight: 600; letter-spacing: -0.01em;
+  }
+  .meta-fields{ display:flex; gap: 14px; flex-wrap: wrap; }
+  .field{ display:flex; flex-direction: column; gap: 3px; }
+  .field label{ font-family: var(--sans-util); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); }
+  .field input[type="text"], .field input[type="date"]{
+    font-family: var(--serif-body); font-size: 14px; padding: 6px 8px; border: 1px solid var(--rule);
+    background: #fff; border-radius: 3px; color: var(--ink); min-width: 190px;
+  }
+  .field input:focus-visible{ outline: 2px solid var(--focus); outline-offset: 1px; }
+
+  .actions{ display:flex; gap:8px; flex-wrap: wrap; align-items: stretch; }
+  button, .btn-file label{
+    font-family: var(--sans-util); font-size: 12.5px; letter-spacing: 0.03em;
+    height: 38px; padding: 0 13px; border-radius: 3px; border: 1px solid var(--ink); background: transparent; color: var(--ink);
+    cursor: pointer; display:inline-flex; align-items:center; justify-content:center; box-sizing:border-box; line-height: 1;
+  }
+  button:hover, .btn-file label:hover{ background: var(--ink); color: var(--paper); }
+  button:focus-visible, .btn-file label:focus-visible{ outline: 2px solid var(--focus); outline-offset: 2px; }
+  button.primary{ background: var(--moss-deep); color: var(--paper); border-color: var(--moss-deep); }
+  button.primary:hover{ background: var(--ink); border-color: var(--ink); }
+  .btn-file input[type=file]{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+
+  /* ---------- Intro ---------- */
+  .intro{ max-width: 700px; margin: 30px auto 6px; padding: 0 24px 0 84px; }
+  .intro p{ color: var(--ink-soft); font-size: 15px; }
+  .intro p.note{ font-size: 13px; border-left: 2px solid var(--moss); padding-left: 12px; }
+
+  /* ---------- Layout: spine + content ---------- */
+  .layout{ display:flex; max-width: 980px; margin: 0 auto; padding: 10px 24px 90px; gap: 26px; }
+
+  nav.spine{
+    width: 54px; flex: 0 0 54px; position: sticky; top: 96px; align-self: flex-start;
+    display:flex; flex-direction: column; align-items: center; gap: 2px;
+  }
+  nav.spine .rule{ width:1px; flex:1; background: var(--rule); }
+  nav.spine button.node{
+    all: unset; cursor: pointer; width: 40px; height: 40px; border-radius: 50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family: var(--serif-display); font-size: 15px; color: var(--ink-soft);
+    border: 1px solid var(--rule); background: var(--paper);
+  }
+  nav.spine button.node[aria-current="true"]{
+    background: var(--moss-deep); color: var(--paper); border-color: var(--moss-deep);
+  }
+  nav.spine button.node:focus-visible{ outline: 2px solid var(--focus); outline-offset: 2px; }
+
+  main{ flex: 1; min-width: 0; }
+
+  section.domain{ padding-top: 6px; margin-bottom: 54px; scroll-margin-top: 110px; }
+  section.domain .domain-head{ border-bottom: 1px solid var(--ink); padding-bottom: 10px; margin-bottom: 22px; }
+  section.domain .numeral{
+    font-family: var(--serif-display); color: var(--moss-deep); font-size: 13px; letter-spacing: 0.08em;
+  }
+  section.domain h2{ font-family: var(--serif-display); font-size: 25px; margin: 4px 0 0; font-weight: 600; letter-spacing: -0.01em; }
+
+  .question-card{ padding: 16px 0 22px; border-bottom: 1px solid var(--rule); }
+  .question-card:last-child{ border-bottom: none; }
+  .question-card p.q{ font-size: 16.5px; margin: 0 0 6px; }
+  .question-card p.framing{
+    font-family: var(--serif-body); font-style: italic; font-size: 13.5px; color: var(--clay);
+    margin: 0 0 10px; max-width: 60ch;
+  }
+  .question-card textarea{
+    width: 100%; min-height: 68px; resize: vertical; font-family: var(--serif-body); font-size: 14.5px;
+    padding: 10px 12px; border: 1px solid var(--rule); border-radius: 3px; background: var(--paper-alt); color: var(--ink);
+  }
+  .question-card textarea:focus-visible{ outline: 2px solid var(--focus); outline-offset: 1px; background: #fff; }
+  .question-card textarea::placeholder{ color: #9a9384; }
+
+  footer.bottom{
+    max-width: 980px; margin: 0 auto; padding: 0 24px 60px 84px; color: var(--ink-soft); font-size: 13px;
+  }
+
+  .toast{
+    position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%);
+    background: var(--ink); color: var(--paper); font-family: var(--sans-util); font-size: 13px;
+    padding: 10px 18px; border-radius: 4px; opacity:0; pointer-events:none; transition: opacity .25s ease;
+    z-index: 50;
+  }
+  .toast.show{ opacity: 1; }
+
+  @media (max-width: 720px){
+    .layout{ flex-direction: column; padding: 10px 16px 70px; }
+    nav.spine{ position: sticky; top: 0; flex-direction: row; width: 100%; flex: none; overflow-x:auto; padding: 8px 0; background: var(--paper); z-index: 25; }
+    nav.spine .rule{ display:none; }
+    .intro{ padding-left: 16px; }
+    footer.bottom{ padding-left: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="trace-nav" aria-label="TRACE Companions">
+  <span class="trace-nav-label">TRACE Companions</span>
+  <a href="index.html">All Companions</a>
+  <a href="companion_neural_cascade.html">Ch. 3.6 What Happens in the Brain During Shame?</a>
+  <a href="companion_three_dimensions_of_shame.html">Ch. 4 Three Dimensions of Shame</a>
+  <a href="companion_cultural_shame_concepts.html">Ch. 5 Cultural Shame Concepts</a>
+  <a href="companion_bodymap_shame.html">Ch. 6 Body Map of Shame</a>
+  <a href="companion_capital_dimensions.html">Ch. 7 Capital Dimensions</a>
+  <a href="companion_teacher_interpersonal_behaviours.html">Ch. 7.3 Teacher Interpersonal Behaviours</a>
+  <a href="companion_shame_as_resource.html">Ch. 10 Shame as Resource</a>
+  <a href="companion_teaching_shame_sensitive_moments.html">Ch. 12.1 Teaching in Shame-Sensitive Moments</a>
+  <a href="companion_caste_institutional_governance.html">Ch. 13.1 Caste as Institutional Governance Problem</a>
+  <span class="trace-nav-current">Ch. 12.3 Reflection Tool</span>
+</nav>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">
+      <span class="eyebrow">Shame-Sensitive Educational Practice</span>
+      <h1>Reflection Tool</h1>
+    </div>
+    <div class="meta-fields">
+      <div class="field">
+        <label for="situation-label">Situation (private label)</label>
+        <input type="text" id="situation-label" placeholder="e.g. seminar discussion, Tuesday">
+      </div>
+      <div class="field">
+        <label for="reflection-date">Date</label>
+        <input type="date" id="reflection-date">
+      </div>
+    </div>
+    <div class="actions">
+      <button id="btn-clear" type="button">Start new reflection</button>
+      <span class="btn-file">
+        <label for="file-load">Open saved reflection</label>
+        <input type="file" id="file-load" accept="application/json">
+      </span>
+      <button id="btn-save" type="button" class="primary">Save reflection to file</button>
+      <button id="btn-export" type="button">Export as readable text</button>
+    </div>
+  </div>
+</header>
+
+<div class="intro">
+  <p>This tool supports the analysis of educational situations in which shame-related vulnerability may have become relevant. It is intended for individual reflection, before or after a teaching situation, and can equally form the basis of a conversation with a colleague you choose to involve.</p>
+  <p class="note">Everything typed here stays in this browser. Nothing is sent anywhere. Use <strong>Save reflection to file</strong> to keep a private copy on your own device, and <strong>Open saved reflection</strong> to continue later.</p>
+</div>
+
+<div class="layout">
+  <nav class="spine" id="spine" aria-label="Reflective domains"></nav>
+  <main id="main"></main>
+</div>
+
+<footer class="bottom">
+  <p>Adapted from Table 17, Reflection Tool for Shame-Sensitive Educational Practice.</p>
+  <p>Yadav, H., Vanderheiden, E., &amp; Varshney, S. (2026). <em>Shame as Resource in Indian Education: A Handbook for Teachers, Researchers, and Policy-Makers.</em> &nbsp;&middot;&nbsp; TRACE Study</p>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const DOMAINS = [
+  {
+    id: "understanding", numeral: "1", title: "Understanding the situation",
+    questions: [
+      ["What happened in the educational situation?", "A careful reconstruction helps to distinguish observation from interpretation."],
+      ["At which point did participation or behaviour change?", "Changes in involvement or bodily expression may indicate heightened vulnerability."],
+      ["What role did the presence of others play?", "Public visibility may intensify the experience of being evaluated."],
+      ["Which expectations shaped the situation?", "Awareness of implicit expectations helps to identify possible sources of uncertainty."],
+      ["Which assessment criteria were relevant?", "Transparent criteria provide orientation and may support continued participation."],
+      ["How was the student's cultural background acknowledged in this situation?", "Acknowledging cultural background can support recognition and belonging."]
+    ]
+  },
+  {
+    id: "perception", numeral: "2", title: "Reflecting on one's own perception",
+    questions: [
+      ["How did I interpret the student's behaviour?", "Professional reflection makes the meanings attributed to behaviour more visible."],
+      ["Which expectations concerning knowledge or language informed my interpretation?", "Academic expectations can shape perceptions of competence."],
+      ["Which role may caste, gender, language or class have played in how I read this student's behaviour?", "Interpretations of hesitation, silence or confidence are rarely neutral and often carry unexamined assumptions tied to social position."],
+      ["Which further interpretation of the behaviour is possible?", "An additional interpretation may open a different pedagogical response."],
+      ["Would I have interpreted the same behaviour similarly in another student?", "This question draws attention to possible differences in perception."],
+      ["Did the student receive the same degree of attention as others?", "Attention can communicate recognition and educational relevance."]
+    ]
+  },
+  {
+    id: "intention", numeral: "3", title: "Intention and effect",
+    questions: [
+      ["What did I intend through my response?", "Pedagogical intention provides an important point of reference for reflection."],
+      ["How might the student have experienced my response?", "Pedagogical intention and educational effect may differ."],
+      ["Which reaction became visible afterwards?", "The student's response may provide an indication of the immediate educational effect."],
+      ["What influence may my tone have had?", "Tone can shape how correction or guidance is received."],
+      ["What influence may the timing of my response have had?", "Timing can affect whether an intervention feels supportive or exposing."],
+      ["How visible was the exchange to other students?", "Social visibility can increase the significance of an educational response."],
+      ["How did I respond to reactions from fellow students, such as laughter or dismissive comments?", "Intervening in a peer reaction can restore a student's standing, while an unaddressed reaction may deepen the experience of exposure."]
+    ]
+  },
+  {
+    id: "participation", numeral: "4", title: "Participation and learning",
+    questions: [
+      ["How did the situation influence the student's further participation?", "Shame-sensitive reflection considers whether continued involvement remained possible."],
+      ["Which opportunity for renewed participation was available?", "A clearly accessible opportunity can support re-entry into the learning process."],
+      ["Did my response distinguish clearly between the assessment of the student's performance or contribution and the assessment of the student as a person?", "A clear distinction between performance and person protects dignity and supports continued engagement in learning."],
+      ["How was the student addressed as capable of learning?", "Recognition can preserve confidence in the possibility of further learning."],
+      ["How was the student's contribution acknowledged?", "Acknowledgement communicates that participation remains valued."],
+      ["Which form of clarification could have supported continued participation?", "Clarification can reduce uncertainty and restore orientation."],
+      ["Would a later conversation have been helpful?", "A later conversation may support trust within the educational relationship."],
+      ["Which opportunity did I offer for this difficulty to become a next step in the student's learning?", "A clearly framed next step can turn a difficult moment into an occasion for growth."]
+    ]
+  },
+  {
+    id: "development", numeral: "5", title: "Professional development",
+    questions: [
+      ["Which aspect of my response was effective?", "Reflection can make existing professional strengths more visible."],
+      ["Which alternative ways of responding to or managing the situation would have been available to me?", "Considering possible alternatives expands the range of pedagogical responses available in comparable situations."],
+      ["Which of these alternatives would I consider appropriate in a comparable situation?", "Selecting an appropriate alternative connects reflection with future pedagogical practice."],
+      ["How could the educational setting be prepared differently?", "Anticipatory design can reduce avoidable exposure."],
+      ["Which element of the situation would benefit from collegial reflection?", "Collegial exchange can add a perspective that is less accessible from one's own position."],
+      ["What have I learned about my own pedagogical practice?", "Reflection connects an individual situation with longer-term professional learning."],
+      ["Where do I see my own need for learning or development that I would like to address?", "Naming this need turns reflection into a starting point for professional growth."]
+    ]
+  },
+  {
+    id: "responsibility", numeral: "6", title: "Professional responsibility",
+    questions: [
+      ["Which aspect lies within my pedagogical scope of action?", "This question supports a realistic understanding of professional responsibility."],
+      ["Which form of additional expertise could complement educational support?", "Additional expertise can extend the response while preserving the educational focus."],
+      ["Does my care for this student support their independence?", "Supportive care strengthens students' own agency in learning."],
+      ["What emotional demands has this situation left with me, and what support would help me carry them?", "Naming one's own emotional load protects the sustainability of relationally attentive teaching over time."],
+      ["Does the situation point to a recurring institutional condition?", "Recurrence may indicate that the issue extends beyond an individual interaction."],
+      ["Which institutional practice should be reconsidered?", "Institutional reflection can address conditions that repeatedly create shame-related vulnerability."],
+      ["Which institutional change could strengthen shame-sensitive practice?", "Individual reflection can contribute to the development of supportive educational conditions."]
+    ]
+  }
+];
+
+const spine = document.getElementById('spine');
+const mainEl = document.getElementById('main');
+
+DOMAINS.forEach((d, di) => {
+  const node = document.createElement('button');
+  node.className = 'node'; node.type = 'button';
+  node.textContent = d.numeral;
+  node.setAttribute('aria-label', d.title);
+  node.dataset.target = d.id;
+  node.addEventListener('click', () => {
+    document.getElementById('sec-' + d.id).scrollIntoView({behavior: 'smooth', block: 'start'});
+  });
+  spine.appendChild(node);
+  if (di < DOMAINS.length - 1){
+    const rule = document.createElement('div');
+    rule.className = 'rule';
+    spine.appendChild(rule);
+  }
+
+  const section = document.createElement('section');
+  section.className = 'domain';
+  section.id = 'sec-' + d.id;
+
+  const head = document.createElement('div');
+  head.className = 'domain-head';
+  head.innerHTML = '<div class="numeral">' + d.numeral + '</div><h2>' + d.title + '</h2>';
+  section.appendChild(head);
+
+  d.questions.forEach((q, qi) => {
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    const qId = d.id + '-' + qi;
+    card.innerHTML =
+      '<p class="q">' + q[0] + '</p>' +
+      '<p class="framing">' + q[1] + '</p>' +
+      '<textarea id="' + qId + '" placeholder="Notes, kept only in this browser"></textarea>';
+    section.appendChild(card);
+  });
+
+  mainEl.appendChild(section);
+});
+
+/* Highlight current domain in spine while scrolling */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    const node = spine.querySelector('[data-target="' + entry.target.id.replace('sec-','') + '"]');
+    if (!node) return;
+    if (entry.isIntersecting){
+      spine.querySelectorAll('.node').forEach(n => n.removeAttribute('aria-current'));
+      node.setAttribute('aria-current', 'true');
+    }
+  });
+}, { rootMargin: '-30% 0px -60% 0px' });
+DOMAINS.forEach(d => observer.observe(document.getElementById('sec-' + d.id)));
+
+/* ---------- Save / Load / Export / Clear ---------- */
+document.getElementById('reflection-date').valueAsDate = new Date();
+
+function collectAnswers(){
+  const data = { situation: document.getElementById('situation-label').value,
+                 date: document.getElementById('reflection-date').value,
+                 answers: {} };
+  DOMAINS.forEach(d => d.questions.forEach((q, qi) => {
+    const el = document.getElementById(d.id + '-' + qi);
+    data.answers[d.id + '-' + qi] = el.value;
+  }));
+  return data;
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function downloadBlob(content, filename, type){
+  const blob = new Blob([content], {type});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
+
+document.getElementById('btn-save').addEventListener('click', () => {
+  const data = collectAnswers();
+  const label = (data.situation || 'reflection').replace(/[^a-z0-9]+/gi, '_').toLowerCase();
+  downloadBlob(JSON.stringify(data, null, 2), 'reflection_' + label + '_' + (data.date || '') + '.json', 'application/json');
+  showToast('Saved to file. Nothing was sent anywhere.');
+});
+
+document.getElementById('file-load').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try{
+      const data = JSON.parse(reader.result);
+      document.getElementById('situation-label').value = data.situation || '';
+      if (data.date) document.getElementById('reflection-date').value = data.date;
+      Object.keys(data.answers || {}).forEach(key => {
+        const el = document.getElementById(key);
+        if (el) el.value = data.answers[key];
+      });
+      showToast('Reflection loaded.');
+    }catch(err){
+      showToast('This file could not be read as a saved reflection.');
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+});
+
+document.getElementById('btn-export').addEventListener('click', () => {
+  const data = collectAnswers();
+  let out = 'REFLECTION TOOL FOR SHAME-SENSITIVE EDUCATIONAL PRACTICE\n';
+  out += 'Situation: ' + (data.situation || '(not labelled)') + '\n';
+  out += 'Date: ' + (data.date || '(not set)') + '\n\n';
+  DOMAINS.forEach(d => {
+    out += '== ' + d.numeral + '. ' + d.title + ' ==\n\n';
+    d.questions.forEach((q, qi) => {
+      const val = data.answers[d.id + '-' + qi];
+      if (val && val.trim()){
+        out += q[0] + '\n' + val.trim() + '\n\n';
+      }
+    });
+  });
+  const label = (data.situation || 'reflection').replace(/[^a-z0-9]+/gi, '_').toLowerCase();
+  downloadBlob(out, 'reflection_' + label + '_' + (data.date || '') + '.txt', 'text/plain');
+  showToast('Exported as text.');
+});
+
+document.getElementById('btn-clear').addEventListener('click', () => {
+  if (!confirm('Start a new reflection? Anything not saved to file will be lost.')) return;
+  document.getElementById('situation-label').value = '';
+  document.getElementById('reflection-date').valueAsDate = new Date();
+  document.querySelectorAll('textarea').forEach(t => t.value = '');
+  window.scrollTo({top:0, behavior:'smooth'});
+});
+</script>
+
+</body>
+</html>
