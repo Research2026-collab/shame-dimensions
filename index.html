@@ -9,9 +9,11 @@
 
   :root {
     --ink:        #1a1a1a;
-    --paper:      #f7f5f0;
-    --muted:      #6b6560;
-    --rule:       #d8d4cc;
+    --paper:      #f7f8fa;
+    --muted:      #5b6472;
+    --rule:       #dde1e7;
+    --accent:     #2b7a78;
+    --accent-deep:#1f5c5a;
   }
 
   html { scroll-behavior: smooth; }
@@ -19,7 +21,7 @@
   body {
     background: var(--paper);
     color: var(--ink);
-    font-family: 'Avenir Next', 'Avenir', 'Century Gothic', Futura, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     font-size: 15px;
     line-height: 1.7;
     min-height: 100vh;
@@ -73,6 +75,7 @@
 
   .card {
     border: 1px solid var(--rule);
+    border-top: 3px solid var(--accent);
     background: #fff;
     padding: 1.3rem 1.4rem 1.2rem;
     display: flex;
@@ -84,7 +87,7 @@
     letter-spacing: .1em;
     text-transform: uppercase;
     font-weight: 700;
-    color: var(--muted);
+    color: var(--accent);
     margin-bottom: .5rem;
   }
 
@@ -92,7 +95,7 @@
     font-size: 1.02rem;
     font-weight: 700;
     line-height: 1.3;
-    color: var(--ink);
+    color: var(--accent-deep);
     margin-bottom: .7rem;
   }
 
@@ -107,13 +110,13 @@
   .card-link {
     font-size: 12.5px;
     font-weight: 700;
-    color: var(--ink);
+    color: var(--accent-deep);
     text-decoration: none;
     border-top: 1px solid var(--rule);
     padding-top: .8rem;
     display: inline-block;
   }
-  .card-link:hover { color: #000; }
+  .card-link:hover { color: var(--ink); }
   .card-link::after { content: ' →'; }
 
   .about-block {
@@ -140,73 +143,20 @@
   @media (max-width: 600px) {
     header, main { padding-left: 1.2rem; padding-right: 1.2rem; }
   }
-
-  .trace-nav {
-    max-width: 1080px;
-    margin: 0 auto;
-    padding: .9rem 2rem 0;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: .4rem;
-  }
-  .trace-nav-label {
-    font-size: 10px;
-    letter-spacing: .1em;
-    text-transform: uppercase;
-    color: var(--muted);
-    font-weight: 700;
-    margin-right: .5rem;
-    flex-basis: 100%;
-  }
-  .trace-nav a, .trace-nav .trace-nav-current {
-    font-size: 11.5px;
-    padding: .3rem .7rem;
-    border: 1px solid var(--rule);
-    color: var(--muted);
-    text-decoration: none;
-    background: #fff;
-    font-family: inherit;
-    white-space: nowrap;
-  }
-  .trace-nav a:hover { color: var(--ink); border-color: #aaa; }
-  .trace-nav .trace-nav-current {
-    color: var(--ink);
-    font-weight: 700;
-    background: var(--paper);
-  }
-  @media (max-width: 600px) {
-    .trace-nav { padding-left: 1.2rem; padding-right: 1.2rem; }
-  }
 </style>
 </head>
 <body>
 
-<nav class="trace-nav">
-    <span class="trace-nav-label">TRACE Companions</span>
-    <span class="trace-nav-current">All Companions</span>
-    <a href="companion_neural_cascade.html">Ch. 3.6 What Happens in the Brain During Shame?</a>
-    <a href="companion_three_dimensions_of_shame.html">Ch. 4 Three Dimensions of Shame</a>
-    <a href="companion_cultural_shame_concepts.html">Ch. 5 Cultural Shame Concepts</a>
-    <a href="companion_bodymap_shame.html">Ch. 6 Body Map of Shame</a>
-    <a href="companion_capital_dimensions.html">Ch. 7 Capital Dimensions</a>
-    <a href="companion_teacher_interpersonal_behaviours.html">Ch. 7.3 Teacher Interpersonal Behaviours</a>
-    <a href="companion_shame_as_resource.html">Ch. 10 Shame as Resource</a>
-    <a href="companion_teaching_shame_sensitive_moments.html">Ch. 12.1 Teaching in Shame-Sensitive Moments</a>
-    <a href="companion_caste_institutional_governance.html">Ch. 13.1 Caste as Institutional Governance Problem</a>
-    <a href="reflection_tool.html">Ch. 12.3 Reflection Tool</a>
-  </nav>
-
 <header>
   <p class="eyebrow">TRACE Study &nbsp;&middot;&nbsp; Companion Collection</p>
   <h1>Interactive Companions</h1>
-  <p class="subtitle">Ten interactive pieces accompanying <em>Shame as Resource in Indian Education: A Handbook for Teachers, Researchers, and Policy-Makers</em> (Yadav, Vanderheiden &amp; Varshney, 2026). Each companion accompanies a specific chapter and can be read on its own, without prior familiarity with the book.</p>
+  <p class="subtitle">Nine interactive pieces accompanying <em>Shame as Resource in Indian Education: A Handbook for Teachers, Researchers, and Policy-Makers</em> (Yadav, Vanderheiden &amp; Varshney, 2026). Each companion accompanies a specific chapter and can be read on its own, without prior familiarity with the book.</p>
 </header>
 
 <main>
 
   <div class="about-block">
-    Each companion below opens directly, no login or download required. Every page carries a narrow navigation strip at the top linking to all ten pieces, so you can move between them without returning here. The chapter number in each card refers to the corresponding section of the handbook.
+    Each companion below opens directly, no login or download required. Every companion carries a link back to this overview, so you can return here at any time. The chapter number in each card refers to the corresponding section of the handbook.
   </div>
 
   <div class="grid">
@@ -272,13 +222,6 @@
       <p class="card-title">Reflection Tool for Shame-Sensitive Practice</p>
       <p class="card-desc">Guides teachers through six reflective domains, from reconstructing a teaching situation to institutional responsibility, in preparation for or following a difficult moment. Answers stay in the browser and can be saved to or reopened from a private file, nothing is sent anywhere.</p>
       <a class="card-link" href="reflection_tool.html">Open companion</a>
-    </div>
-
-    <div class="card">
-      <p class="card-chap">Chapter 13.1</p>
-      <p class="card-title">Caste as an Institutional Governance Problem</p>
-      <p class="card-desc">Anchors itself in a single documented finding, that at one university no higher-caste student chose a Dalit faculty member as doctoral supervisor, and reads this finding across the student, teaching staff and institutional levels at which caste operates as a governance problem.</p>
-      <a class="card-link" href="companion_caste_institutional_governance.html">Open companion</a>
     </div>
 
   </div>
