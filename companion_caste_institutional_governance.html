@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caste as an Institutional Governance Problem</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink:        #1a1a1a;
+    --paper:      #f7f5f0;
+    --muted:      #6b6560;
+    --rule:       #d8d4cc;
+    --stud:       #1e4a72;
+    --stud-light: #e6eef5;
+    --staff:      #7a3e1a;
+    --staff-light:#f5ede6;
+    --inst:       #3b3472;
+    --inst-light: #eceaf6;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Avenir Next', 'Avenir', 'Century Gothic', Futura, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  header {
+    border-bottom: 1px solid var(--rule);
+    padding: 2.5rem 2rem 1.8rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: .6rem;
+  }
+
+  h1 {
+    font-size: clamp(1.5rem, 4vw, 2.1rem);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -.01em;
+    color: var(--ink);
+    margin-bottom: .9rem;
+  }
+
+  .subtitle {
+    font-size: 13.5px;
+    color: var(--muted);
+    max-width: 640px;
+    line-height: 1.65;
+  }
+
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 2rem 4rem;
+  }
+
+  .section-label {
+    font-size: 10.5px;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: .7rem;
+    margin-top: 2.2rem;
+  }
+
+  .case-wrap {
+    border: 1px solid var(--rule);
+    border-left: 4px solid #999;
+    background: #fff;
+    padding: 1.6rem 1.8rem;
+    margin-bottom: .5rem;
+    font-size: 14px;
+    line-height: 1.9;
+    color: #2c2c2c;
+  }
+
+  .case-wrap .case-label {
+    font-style: normal;
+    font-weight: 700;
+    font-size: 11.5px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: .9rem;
+    display: block;
+  }
+
+  .case-fact {
+    font-weight: 600;
+    padding: 0 2px;
+    border-radius: 1px;
+  }
+
+  .case-note {
+    margin-top: 1rem;
+    padding-top: .9rem;
+    border-top: 1px dashed var(--rule);
+    font-size: 13px;
+    font-style: italic;
+    color: var(--muted);
+    display: none;
+  }
+  body.tab-stud .case-note-stud { display: block; }
+  body.tab-staff .case-note-staff { display: block; }
+  body.tab-inst .case-note-inst { display: block; }
+
+  .case-source {
+    font-size: 11.5px;
+    color: var(--muted);
+    margin-top: .5rem;
+    margin-bottom: 2rem;
+    line-height: 1.5;
+  }
+
+  .tabs {
+    display: flex;
+    border-bottom: 2px solid var(--rule);
+    overflow-x: auto;
+    gap: 0;
+    margin-top: .4rem;
+  }
+
+  .tab-btn {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    padding: .75rem 1.2rem;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color .18s, border-color .18s;
+    line-height: 1.3;
+  }
+  .tab-btn:hover { color: var(--ink); }
+
+  .tab-num {
+    display: block;
+    font-size: 9.5px;
+    font-weight: 400;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    opacity: .55;
+    margin-bottom: 1px;
+  }
+
+  .tab-btn.active-stud  { color: var(--stud);  border-bottom-color: var(--stud); }
+  .tab-btn.active-staff { color: var(--staff); border-bottom-color: var(--staff); }
+  .tab-btn.active-inst  { color: var(--inst);  border-bottom-color: var(--inst); }
+
+  .panel { display: none; padding-top: 1.8rem; }
+  .panel.visible { display: block; }
+
+  .panel-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.4rem;
+  }
+
+  .panel-accent {
+    width: 4px;
+    min-height: 52px;
+    flex-shrink: 0;
+    border-radius: 2px;
+    margin-top: 3px;
+  }
+  .accent-stud  { background: var(--stud); }
+  .accent-staff { background: var(--staff); }
+  .accent-inst  { background: var(--inst); }
+
+  .panel-label {
+    font-size: 10.5px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: .25rem;
+  }
+  .label-stud  { color: var(--stud); }
+  .label-staff { color: var(--staff); }
+  .label-inst  { color: var(--inst); }
+
+  .panel-name {
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--ink);
+    margin-bottom: .2rem;
+  }
+
+  .panel-sub {
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+
+  .stat-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    margin-bottom: 1.4rem;
+  }
+  .stat-pill {
+    font-size: 12px;
+    padding: .3rem .75rem;
+    border: 1px solid var(--rule);
+    background: #fff;
+    color: var(--muted);
+    font-weight: 500;
+  }
+  .stat-pill strong { color: var(--ink); font-weight: 700; }
+
+  .threat-tag {
+    display: inline-flex;
+    align-items: baseline;
+    gap: .4rem;
+    font-size: 11.5px;
+    padding: .35rem .8rem;
+    margin-bottom: 1.3rem;
+    border-left-width: 3px;
+    border-left-style: solid;
+    background: #fff;
+    border-top: 1px solid var(--rule);
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  .threat-tag .threat-label {
+    text-transform: uppercase;
+    letter-spacing: .09em;
+    font-weight: 700;
+  }
+  .threat-tag .threat-value { color: #2a2a2a; font-style: italic; }
+  .threat-stud  { border-left-color: var(--stud); }
+  .threat-staff { border-left-color: var(--staff); }
+  .threat-inst  { border-left-color: var(--inst); }
+  .threat-stud  .threat-label { color: var(--stud); }
+  .threat-staff .threat-label { color: var(--staff); }
+  .threat-inst  .threat-label { color: var(--inst); }
+
+  .panel-body {
+    font-size: 14px;
+    line-height: 1.88;
+    color: #2a2a2a;
+    margin-bottom: 1.1rem;
+  }
+
+  .read-more-wrap .body-excerpt { margin-bottom: .3rem; }
+  .read-more-wrap .body-rest {
+    display: none;
+  }
+  .read-more-wrap.expanded .body-rest { display: block; }
+  .read-more-wrap.expanded .read-more-btn { display: none; }
+  .read-more-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #4a4540;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+    margin-bottom: 1.1rem;
+    display: inline-block;
+  }
+  .read-more-btn:hover { color: var(--ink); }
+
+  .voice {
+    background: #fff;
+    border: 1px solid var(--rule);
+    padding: 1.2rem 1.4rem 1rem;
+    margin: 1.4rem 0;
+  }
+
+  .voice-label {
+    font-size: 10px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: .55rem;
+  }
+
+  .voice-text {
+    font-size: 13.5px;
+    line-height: 1.82;
+    color: #2c2c2c;
+    font-style: italic;
+  }
+
+  .voice-id {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: .5rem;
+    font-style: normal;
+  }
+
+  .dual-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  @media (max-width: 580px) { .dual-col { grid-template-columns: 1fr; } }
+
+  .col-card {
+    border: 1px solid var(--rule);
+    padding: 1rem 1.1rem;
+    background: #fff;
+  }
+
+  .col-card-head {
+    font-size: 10.5px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: .7rem;
+  }
+  .head-risk   { color: #a02020; }
+  .head-action { color: #2d5f4f; }
+
+  .col-card ul { list-style: none; padding: 0; }
+  .col-card li {
+    font-size: 13px;
+    line-height: 1.65;
+    padding: .3rem 0 .3rem .9rem;
+    position: relative;
+    color: #2c2c2c;
+    border-bottom: 1px solid #f0eeea;
+    font-weight: 400;
+  }
+  .col-card li:last-child { border-bottom: none; }
+  .col-card li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: .75rem;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+  }
+  .risk-card   li::before { background: #a02020; }
+  .action-card li::before { background: #2d5f4f; }
+
+  .chapter-ref {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 1.6rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--rule);
+    line-height: 1.55;
+  }
+
+  footer {
+    border-top: 1px solid var(--rule);
+    padding: 1.4rem 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+    font-size: 11.5px;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 600px) {
+    header, main { padding-left: 1.2rem; padding-right: 1.2rem; }
+    .tab-btn { padding: .65rem .8rem; font-size: 12px; }
+  }
+
+  .trace-nav {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: .9rem 2rem 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .4rem;
+  }
+  .trace-nav-label {
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+    margin-right: .5rem;
+    flex-basis: 100%;
+  }
+  .trace-nav a, .trace-nav .trace-nav-current {
+    font-size: 11.5px;
+    padding: .3rem .7rem;
+    border: 1px solid var(--rule);
+    color: var(--muted);
+    text-decoration: none;
+    background: #fff;
+    font-family: inherit;
+    white-space: nowrap;
+  }
+  .trace-nav a:hover { color: var(--ink); border-color: #aaa; }
+  .trace-nav .trace-nav-current {
+    color: var(--ink);
+    font-weight: 700;
+    background: var(--paper);
+  }
+  @media (max-width: 600px) {
+    .trace-nav { padding-left: 1.2rem; padding-right: 1.2rem; }
+  }
+</style>
+</head>
+<body class="tab-stud">
+
+<header>
+  <p class="eyebrow">Companion · Chapter 13.1 · TRACE Study</p>
+  <h1>Caste as an Institutional Governance Problem</h1>
+  <p class="subtitle">The same threat to status and belonging that this handbook describes in a single teaching interaction recurs here at the level of institutional routine. One documented finding is read across the three levels at which caste operates as a governance problem, each tab naming the specific form that threatened status takes, the evidence behind it, and the recommended action.</p>
+</header>
+
+<nav class="trace-nav">
+    <span class="trace-nav-label">TRACE Companions</span>
+    <a href="index.html">All Companions</a>
+    <a href="companion_neural_cascade.html">Ch. 3.6 What Happens in the Brain During Shame?</a>
+    <a href="companion_three_dimensions_of_shame.html">Ch. 4 Three Dimensions of Shame</a>
+    <a href="companion_cultural_shame_concepts.html">Ch. 5 Cultural Shame Concepts</a>
+    <a href="companion_bodymap_shame.html">Ch. 6 Body Map of Shame</a>
+    <a href="companion_capital_dimensions.html">Ch. 7 Capital Dimensions</a>
+    <a href="companion_teacher_interpersonal_behaviours.html">Ch. 7.3 Teacher Interpersonal Behaviours</a>
+    <a href="companion_shame_as_resource.html">Ch. 10 Shame as Resource</a>
+    <a href="companion_teaching_shame_sensitive_moments.html">Ch. 12.1 Teaching in Shame-Sensitive Moments</a>
+    <span class="trace-nav-current">Ch. 13.1 Caste as Institutional Governance Problem</span>
+  </nav>
+
+<main>
+
+  <p class="section-label">The documented finding</p>
+
+  <div class="case-wrap">
+    <span class="case-label">Chapter 7.2.2 &nbsp;·&nbsp; TRACE Study</span>
+    At one studied university, <span class="case-fact">during the observation period, not a single student from a higher caste chose a Dalit faculty member as doctoral supervisor.</span>
+
+    <div class="case-note case-note-stud">Read at the student level, this is a pattern of supervisor choice repeated across many individual students, none of whom may have intended to exclude anyone.</div>
+    <div class="case-note case-note-staff">Read at the teaching staff level, the same finding is direct evidence of the institutional marginalisation of the faculty member concerned, produced structurally rather than by any deficit on their part.</div>
+    <div class="case-note case-note-inst">Read at the institutional level, the finding shows why internal self-reporting is not enough. Supervision choices of this kind remain invisible in ordinary records unless they are collected systematically and reviewed by a body independent of the department itself.</div>
+  </div>
+
+  <p class="case-source">This is a documented empirical finding, not a composite or fictional scenario. Additional documented mechanisms are introduced within each tab.</p>
+
+  <p class="section-label">Three levels, one governance problem</p>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab-btn active-stud" role="tab" onclick="switchTab('stud',this)" aria-selected="true">
+      <span class="tab-num">13.1.1 &nbsp;–&nbsp; 13.1.2</span>
+      Student Level
+    </button>
+    <button class="tab-btn" role="tab" onclick="switchTab('staff',this)" aria-selected="false">
+      <span class="tab-num">13.1.3 &nbsp;–&nbsp; 13.1.4</span>
+      Teaching Staff Level
+    </button>
+    <button class="tab-btn" role="tab" onclick="switchTab('inst',this)" aria-selected="false">
+      <span class="tab-num">13.1.5 &nbsp;–&nbsp; 13.1.6</span>
+      Institutional Level
+    </button>
+  </nav>
+
+  <!-- PANEL: STUDENT LEVEL -->
+  <div class="panel visible" id="panel-stud">
+    <div class="panel-head">
+      <div class="panel-accent accent-stud"></div>
+      <div>
+        <p class="panel-label label-stud">Student Level</p>
+        <p class="panel-name">Caste Made Visible Before Teaching Begins</p>
+        <p class="panel-sub">Administrative routines that mark caste publicly, before the academic relationship has even started.</p>
+      </div>
+    </div>
+
+    <p class="threat-tag threat-stud"><span class="threat-label">Status threat</span><span class="threat-value">visibility and threatened belonging</span></p>
+
+    <div class="stat-row">
+      <span class="stat-pill"><strong>Mechanism</strong> Separate registration counters at admission</span>
+      <span class="stat-pill"><strong>Mechanism</strong> Oral admission interviews</span>
+      <span class="stat-pill"><strong>Consequence</strong> Deprivation to dropout and suicide</span>
+    </div>
+
+    <div class="read-more-wrap">
+      <p class="panel-body body-excerpt">
+        Separate registration counters for SC, ST and OBC students at admission make caste membership publicly visible before the degree programme has begun. Oral admission interviews compound this, converting a formal admission category into a trait that becomes assessable, and stigmatisable, within the interview itself.
+      </p>
+      <button class="read-more-btn" onclick="toggleRead(this)">Read the full analysis</button>
+      <div class="body-rest">
+        <p class="panel-body">
+          Sukumar (2022) describes the campus spaces this produces as isolated enclaves that embody a biosystem of dominance and servitude, a description that locates the problem in the ordering of institutional space rather than in individual hostility. The documented consequences range from deprivation, mental blockage and shame to identity crises, breakdowns in communication and, in severe cases, withdrawal from study and suicide, a pattern that corresponds to the disproportionate suicide rates documented in Chapter 7.2.3.
+        </p>
+        <p class="panel-body">
+          The supervisor-choice pattern shown above belongs at this level as much as at the next. It describes a repeated pattern in student decision-making, and it is compounded by an intersectional burden that institutional statistics rarely separate out. Women students from SC, ST and OBC backgrounds carry a load that exceeds the sum of caste-based and gender-based disadvantage, for instance where complaints about caste-related discrimination are treated as institutionally weightier than a simultaneous gender-related grievance from the same student.
+        </p>
+      </div>
+    </div>
+
+    <div class="voice">
+      <p class="voice-label">Documented finding</p>
+      <p class="voice-text">Campus spaces produced by these routines function as "isolated enclaves that embody a biosystem of dominance and servitude."</p>
+      <p class="voice-id">Sukumar, 2022, p. 66, as cited in Yadav &amp; Vanderheiden, 2027</p>
+    </div>
+
+    <div class="dual-col">
+      <div class="col-card risk-card">
+        <p class="col-card-head head-risk">Governance risk if left unaddressed</p>
+        <ul>
+          <li>Visibility-producing routines continue to mark caste before any academic relationship exists</li>
+          <li>Oral selection procedures function as informal gatekeeping without documented criteria</li>
+          <li>Intersectional burden on women from marginalised caste groups disappears into general caste statistics</li>
+        </ul>
+      </div>
+      <div class="col-card action-card">
+        <p class="col-card-head head-action">Recommended action</p>
+        <ul>
+          <li>Mandatory mentoring linking SC, ST and OBC students with faculty from the same backgrounds, with a reporting duty on the actual distribution of supervision by caste</li>
+          <li>Abolition of visibility-producing routines such as separate registration counters, and standardised, documented evaluation criteria in place of unstructured oral assessment</li>
+          <li>Externally audited, caste- and gender-differentiated data on dropout, retention and supervision, with a separate analysis for women from marginalised caste groups</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="chapter-ref">See Chapter 13.1.1 and 13.1.2 for the full discussion and its recommended actions at the student level.</p>
+  </div>
+
+  <!-- PANEL: TEACHING STAFF LEVEL -->
+  <div class="panel" id="panel-staff">
+    <div class="panel-head">
+      <div class="panel-accent accent-staff"></div>
+      <div>
+        <p class="panel-label label-staff">Teaching Staff Level</p>
+        <p class="panel-name">Underrepresentation and Institutional Delegitimisation</p>
+        <p class="panel-sub">The same administrative reality, seen from the position of the faculty member it marginalises.</p>
+      </div>
+    </div>
+
+    <p class="threat-tag threat-staff"><span class="threat-label">Status threat</span><span class="threat-value">repeated, public withdrawal of legitimacy</span></p>
+
+    <div class="stat-row">
+      <span class="stat-pill"><strong>Elite technical institutes</strong> 149 of 6,043 faculty SC, 21 ST</span>
+      <span class="stat-pill"><strong>Elite management institutes</strong> 4 of 642 faculty SC, 1 ST, 17 OBC</span>
+      <span class="stat-pill"><strong>Conference attendance</strong> Women 13.5% of faculty, 7.1% of attendance</span>
+    </div>
+
+    <div class="read-more-wrap">
+      <p class="panel-body body-excerpt">
+        A four-institution study of faculty composition documents the scale of underrepresentation in concrete numbers. At elite technical institutes, only 149 of 6,043 faculty members belonged to Scheduled Castes and 21 to Scheduled Tribes. At leading management institutes, only 4 of 642 faculty members were from Scheduled Castes, 1 from a Scheduled Tribe, and 17 from Other Backward Classes (Dhawan, Belluigi &amp; Idahosa, 2023).
+      </p>
+      <button class="read-more-btn" onclick="toggleRead(this)">Read the full analysis</button>
+      <div class="body-rest">
+        <p class="panel-body">
+          The same study documents how affirmative action becomes, in practice, the production of a "new middle class" whose access is conditional on keeping sociocultural identity concealed, while the dominant group considers itself casteless as long as it does not name its own caste. In one documented selection committee meeting, a member questioned the presence of a Scheduled Caste candidate on the general merit list with a remark equating the candidate's community with people who clear waste. Such statements are not rare exceptions. They form part of the ordinary practice of selection and appointment committees.
+        </p>
+        <p class="panel-body">
+          A documented case illustrates the cumulative effect of this delegitimisation for an individual academic. An Adivasi professor who spoke publicly about examination practices during the pandemic was attacked online by more than 1,800 people, accused by colleagues of instrumentalising her own caste identity, and repeatedly positioned within her own institution as not qualified enough for certain research topics, despite being among the first Adivasi academics in her field (Dhawan, Belluigi &amp; Idahosa, 2023). The withdrawal of legitimacy visible in this case follows the same mechanism that Neckel (2009, 2021) describes for the single interaction and that Dippong et al. (2026) extend empirically to organisations, a repeated, publicly visible questioning of status and belonging that does not remain a single incident but consolidates into a lasting condition.
+        </p>
+        <p class="panel-body">
+          The supervisor-choice pattern documented at the student level is, from this position, direct evidence of exactly this kind of institutional marginalisation rather than a matter of individual popularity. A separate study of conference and training participation shows how the same delegitimisation plays out through apparently neutral administrative procedure. Leave for training was denied under pretextual reasons, information about opportunities circulated informally through networks that women and SC faculty were structurally excluded from, and financial support was allocated at the discretion of individual supervisors, producing reported patterns of caste-based favouritism (Sabharwal, Henderson &amp; Joseph, 2020). Because conference participation feeds directly into promotion decisions through the Academic Performance Index, this discretionary practice becomes a structural mechanism that blocks careers without any single decision ever being named as discrimination.
+        </p>
+      </div>
+    </div>
+
+    <div class="voice">
+      <p class="voice-label">Documented finding</p>
+      <p class="voice-text">"We have to face the threefold burden of class, caste and gender more than the SC men and the rest of the women."</p>
+      <p class="voice-id">Sabharwal, Henderson &amp; Joseph, 2020</p>
+    </div>
+
+    <div class="dual-col">
+      <div class="col-card risk-card">
+        <p class="col-card-head head-risk">Governance risk if left unaddressed</p>
+        <ul>
+          <li>Leave, funding and conference access remain discretionary and undocumented</li>
+          <li>Underrepresentation at senior and elite institutions persists without independent monitoring</li>
+          <li>Faculty who disclose caste face repeated demands to justify their qualifications</li>
+        </ul>
+      </div>
+      <div class="col-card action-card">
+        <p class="col-card-head head-action">Recommended action</p>
+        <ul>
+          <li>Mandatory, independently reviewed monitoring of leave approval, funding allocation and conference participation, broken down by caste and gender</li>
+          <li>Disclosure requirements for funding and conference allocation criteria, with a formal, documented information channel open to all staff</li>
+          <li>Recruitment, training and retention programmes for SC, ST and OBC faculty, with standardised appointment procedures and explicit protection from tokenism</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="chapter-ref">See Chapter 13.1.3 and 13.1.4 for the full discussion and its recommended actions at the teaching staff level.</p>
+  </div>
+
+  <!-- PANEL: INSTITUTIONAL LEVEL -->
+  <div class="panel" id="panel-inst">
+    <div class="panel-head">
+      <div class="panel-accent accent-inst"></div>
+      <div>
+        <p class="panel-label label-inst">Institutional Level</p>
+        <p class="panel-name">Why Self-Reporting Is Not Enough</p>
+        <p class="panel-sub">A formal commitment to monitoring can be delayed or hollowed out by the very units it is meant to hold accountable.</p>
+      </div>
+    </div>
+
+    <p class="threat-tag threat-inst"><span class="threat-label">Status threat</span><span class="threat-value">institutionalised invisibility</span></p>
+
+    <div class="stat-row">
+      <span class="stat-pill"><strong>Promised</strong> 2010 caste count in the Indian Census</span>
+      <span class="stat-pill"><strong>Outcome</strong> Outsourced to a separate, unpublished survey</span>
+      <span class="stat-pill"><strong>Status</strong> Data still unpublished over a decade later</span>
+    </div>
+
+    <div class="read-more-wrap">
+      <p class="panel-body body-excerpt">
+        A detailed study of the failed caste enumeration in the 2011 Indian Census shows how a political commitment to data collection can be undermined through internal administrative manoeuvring. The caste count promised in 2010 was outsourced to a separate, less rigorously conducted survey, the Socio Economic and Caste Census, whose caste data remain unpublished more than a decade later.
+      </p>
+      <button class="read-more-btn" onclick="toggleRead(this)">Read the full analysis</button>
+      <div class="body-rest">
+        <p class="panel-body">
+          Vithayathil (2025) describes this process as the institutionalisation of castelessness, an administrative practice that declares caste officially invisible and thereby structurally protects caste privilege. The mechanism is the same one visible at the other two levels, a status threat that is neutralised not by resolving it but by making it officially unspeakable, so that no single actor need ever be named as responsible for its persistence.
+        </p>
+        <p class="panel-body">
+          For institutional governance, the supervisor-choice finding above and the failed census point to the same lesson from opposite directions. Even where a university formally commits to monitoring and data collection, implementation can be delayed or hollowed out by exactly those administrative units with an interest in the status quo. Internal self-reporting is therefore not sufficient, for students or for staff. Monitoring needs external audit, applied to both groups in the same way, precisely because the units being monitored are the ones least likely to surface an unfavourable pattern voluntarily.
+        </p>
+      </div>
+    </div>
+
+    <div class="voice">
+      <p class="voice-label">Documented finding</p>
+      <p class="voice-text">The outsourcing and non-publication of caste data amounts to an "institutionalization of castelessness."</p>
+      <p class="voice-id">Vithayathil, 2025</p>
+    </div>
+
+    <div class="dual-col">
+      <div class="col-card risk-card">
+        <p class="col-card-head head-risk">Governance risk if left unaddressed</p>
+        <ul>
+          <li>Formal commitments to data collection are delayed or diluted by the units they would hold accountable</li>
+          <li>Oversight resting entirely with one existing body risks protecting exactly the interests it should check</li>
+          <li>Without external audit, patterns like the supervisor-choice finding remain invisible in official records</li>
+        </ul>
+      </div>
+      <div class="col-card action-card">
+        <p class="col-card-head head-action">Recommended action</p>
+        <ul>
+          <li>A dedicated anti-discrimination act for educational institutions, naming caste, gender and language-based discrimination for students and staff alike</li>
+          <li>A legally secured oversight body whose composition is not controlled by any single existing institutional authority</li>
+          <li>Majority representation of marginalised groups and independent civil society organisations, rotating and externally nominated, with binding funding consequences for non-compliance and linkage to existing accreditation procedures</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="chapter-ref">See Chapter 13.1.5 and 13.1.6 for the full discussion and its recommended actions at the institutional level.</p>
+  </div>
+
+</main>
+
+<footer>
+  Yadav, H., &amp; Vanderheiden, E. (2027). <em>Shame as Resource in Indian Education: A Handbook for Teachers, Researchers, and Policy-Makers.</em> &nbsp;&#183;&nbsp; Companion to Chapter 13.1 &nbsp;&#183;&nbsp; TRACE Study
+</footer>
+
+<script>
+  function switchTab(dim, btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => {
+      b.className = 'tab-btn';
+      b.setAttribute('aria-selected', 'false');
+    });
+    btn.classList.add('active-' + dim);
+    btn.setAttribute('aria-selected', 'true');
+
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('visible'));
+    document.getElementById('panel-' + dim).classList.add('visible');
+
+    document.body.className = 'tab-' + dim;
+  }
+
+  function toggleRead(btn) {
+    btn.closest('.read-more-wrap').classList.add('expanded');
+  }
+</script>
+</body>
+</html>
